@@ -66,6 +66,48 @@ private void printTask(int index, Task task) {
 }
 ```
 
+**ステップ4**: タスク読み込み機能の更新
+   - `loadTasks`メソッドを更新し、ファイルからタスクの優先度を読み込むようにします。
+
+```java
+private void loadTasks() {
+    File file = new File(FILE_NAME);
+    if (!file.exists()) {
+        // ファイルが存在しない場合は読み込みをスキップ
+        return;
+    }
+
+    try (BufferedReader reader = new BufferedReader(new FileReader(FILE_NAME))) {
+        String line;
+        while ((line = reader.readLine()) != null) {
+            String[] parts = line.split(",");
+            String description = parts[0];
+            int priority = Integer.parseInt(parts[1]);
+            tasks.add(new Task(description, priority));
+        }
+    } catch (IOException e) {
+        System.out.println("タスクの読み込み中にエラーが発生しました: " + e.getMessage());
+    }
+}
+```
+
+**ステップ5**: タスク保存機能の更新
+   - `saveTasks`メソッドを更新し、ファイルにタスクの優先度を保存するようにします。
+
+```java
+private void saveTasks() {
+    try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_NAME))) {
+        for (Task task : tasks) {
+            writer.write(task.description() + "," + task.priority());
+            writer.newLine();
+        }
+    } catch (IOException e) {
+        System.out.println("タスクの保存中にエラーが発生しました: " + e.getMessage());
+    }
+}
+```
+
+
 **まとめ**:
 - 新しい機能の実装により、タスク管理アプリケーションはより柔軟で使いやすくなります。
 - この過程で、新しい属性の追加、既存機能の更新、およびエラーハンドリングの強化を学ぶことができます。
@@ -78,43 +120,26 @@ private void printTask(int index, Task task) {
 
 **Main.java**
 ```java
-package com.skym_inc;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-/**
- * タスク管理アプリケーション
- */
-public class Main {
+public class ToDoApp {
     private final List<Task> tasks;
     private static final String FILE_NAME = "tasks.txt";
 
-    /**
-     * コンストラクタ
-     * タスクリストを初期化し、ファイルからタスクを読み込む
-     */
-    public Main() {
+    public ToDoApp() {
         tasks = new ArrayList<>();
         loadTasks();
     }
 
-    /**
-     * メインメソッド
-     * @param args コマンドライン引数
-     */
     public static void main(String[] args) {
         // アプリケーションのエントリーポイント
         ToDoApp app = new ToDoApp();
         app.run();
     }
 
-    /**
-     * アプリケーションを実行する
-     * ユーザーからのコマンド入力を処理する
-     */
     public void run() {
         Scanner scanner = new Scanner(System.in);
         String command;
@@ -143,10 +168,6 @@ public class Main {
         scanner.close();
     }
 
-    /**
-     * 新しいタスクの入力を促す
-     * @param scanner スキャナーオブジェクト
-     */
     private void promptForNewTask(Scanner scanner) {
         System.out.print("タスクを入力: ");
         String description = scanner.nextLine();
@@ -156,10 +177,6 @@ public class Main {
         System.out.println("タスクが追加されました。");
     }
 
-    /**
-     * 削除するタスクの番号の入力を促す
-     * @param scanner スキャナーオブジェクト
-     */
     private void promptForTaskDeletion(Scanner scanner) {
         System.out.print("削除するタスク番号を入力: ");
         try {
@@ -175,9 +192,10 @@ public class Main {
         }
     }
 
-    /**
-     * 現在のタスクを表示する
-     */
+    public void addTask(String description, int priority) {
+        tasks.add(new Task(description, priority));
+    }
+
     public void displayTasks() {
         if (tasks.isEmpty()) {
             System.out.println("タスクがありません。");
@@ -188,27 +206,10 @@ public class Main {
         }
     }
 
-    /**
-     * 指定されたタスクを表示する
-     * @param index タスクのインデックス
-     * @param task タスクオブジェクト
-     */
     private void printTask(int index, Task task) {
         System.out.println((index + 1) + ": " + task);
     }
 
-    /**
-     * 新しいタスクを追加する
-     * @param description タスクの説明
-     */
-    public void addTask(String description, int priority) {
-        tasks.add(new Task(description, priority));
-    }
-
-    /**
-     * タスクを削除する
-     * @param index 削除するタスクのインデックス
-     */
     public void deleteTask(int index) {
         if (index >= 0 && index < tasks.size()) {
             tasks.remove(index);
@@ -217,13 +218,10 @@ public class Main {
         }
     }
 
-    /**
-     * タスクをファイルに保存する
-     */
     private void saveTasks() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_NAME))) {
             for (Task task : tasks) {
-                writer.write(task.description());
+                writer.write(task.description() + "," + task.priority());
                 writer.newLine();
             }
         } catch (IOException e) {
@@ -231,9 +229,6 @@ public class Main {
         }
     }
 
-    /**
-     * ファイルからタスクを読み込む
-     */
     private void loadTasks() {
         File file = new File(FILE_NAME);
         if (!file.exists()) {
@@ -244,7 +239,10 @@ public class Main {
         try (BufferedReader reader = new BufferedReader(new FileReader(FILE_NAME))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                tasks.add(new Task(line));
+                String[] parts = line.split(",");
+                String description = parts[0];
+                int priority = Integer.parseInt(parts[1]);
+                tasks.add(new Task(description, priority));
             }
         } catch (IOException e) {
             System.out.println("タスクの読み込み中にエラーが発生しました: " + e.getMessage());
@@ -260,6 +258,7 @@ package com.skym_inc;
 /**
  * タスクを表すクラス
  * @param description タスクの説明
+ * @param priority タスクの優先度
  */
 record Task(String description, int priority) {
     @Override
