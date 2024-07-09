@@ -14,6 +14,13 @@
    - 新しい属性を定義し、コンストラクタと`toString`メソッドを更新します。
 
 ```java
+package com.skym_inc;
+
+/**
+ * タスクを表すクラス
+ * @param description タスクの説明
+ * @param priority タスクの優先度
+ */
 record Task(String description, int priority) {
     @Override
     public String toString() {
