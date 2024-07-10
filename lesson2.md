@@ -12,7 +12,6 @@
 
 **コード例**:
 ```java
-import java.util.Collections;
 import java.util.Comparator;
 
 private void sortTasksByPriority() {
@@ -48,7 +47,6 @@ package com.skym_inc;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
@@ -245,8 +243,11 @@ public class Main {
         }
     }
 
+    /**
+     * タスクの優先度に基づいてリストをソートする
+     */
     private void sortTasksByPriority() {
-        Collections.sort(tasks, Comparator.comparingInt(Task::priority));
+        tasks.sort(Comparator.comparingInt(Task::priority));
     }
 }
 ```
