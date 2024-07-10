@@ -45,9 +45,9 @@ private void promptForNewTask(Scanner scanner) {
 
 **まとめ**: この練習を通じて、無効な入力を適切に処理する方法を学び、ユーザーが正しいデータを入力することを保証する重要性を理解します。
 
-**最終コード**
+### 最終コード
 
-Main.java
+**Main.java**
 ```java
 package com.skym_inc;
 
@@ -121,10 +121,31 @@ public class Main {
     private void promptForNewTask(Scanner scanner) {
         System.out.print("タスクを入力: ");
         String description = scanner.nextLine();
-        System.out.print("優先度を入力 (1-5, 1が最も高い): ");
-        int priority = Integer.parseInt(scanner.nextLine());
+        int priority = getValidPriority(scanner);
         addTask(description, priority);
         System.out.println("タスクが追加されました。");
+    }
+
+    /**
+     * 入力された優先度が1から5の範囲内であることを確認する
+     * @param scanner スキャナーオブジェクト
+     */
+    private int getValidPriority(Scanner scanner) {
+        int priority;
+        while (true) {
+            try {
+                System.out.print("優先度を入力 (1-5, 1が最も高い): ");
+                priority = Integer.parseInt(scanner.nextLine());
+                if (priority < 1 || priority > 5) {
+                    System.out.println("無効な優先度です。1から5の間で入力してください。");
+                } else {
+                    break;
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("無効な入力です。数値を入力してください。");
+            }
+        }
+        return priority;
     }
 
     /**
