@@ -165,7 +165,9 @@ public class Main {
     }
 
     /**
-     * 現在のタスクを表示する
+     * 新しいタスクを追加する
+     * @param description タスクの説明
+     * @param priority タスクの優先度
      */
     public void addTask(String description, int priority) {
         tasks.add(new Task(description, priority));
