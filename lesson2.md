@@ -15,8 +15,8 @@
 import java.util.Collections;
 import java.util.Comparator;
 
-public void sortTasksByPriority() {
-    Collections.sort(tasks, Comparator.comparingInt(Task::priority));
+private void sortTasksByPriority() {
+   tasks.sort(Comparator.comparingInt(Task::priority));
 }
 ```
 
