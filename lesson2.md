@@ -40,10 +40,12 @@ private void printTask(int index, Task task) {
 }
 ```
 
-**最終コード**
+###最終コード
 
-**ToDoApp.java**
+**Main.java**
 ```java
+package com.skym_inc;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,21 +53,36 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 
-public class ToDoApp {
+/**
+ * タスク管理アプリケーション
+ */
+public class Main {
     private final List<Task> tasks;
     private static final String FILE_NAME = "tasks.txt";
 
-    public ToDoApp() {
+    /**
+     * コンストラクタ
+     * タスクリストを初期化し、ファイルからタスクを読み込む
+     */
+    public Main() {
         tasks = new ArrayList<>();
         loadTasks();
     }
 
+    /**
+     * メインメソッド
+     * @param args コマンドライン引数
+     */
     public static void main(String[] args) {
         // アプリケーションのエントリーポイント
         ToDoApp app = new ToDoApp();
         app.run();
     }
 
+    /**
+     * アプリケーションを実行する
+     * ユーザーからのコマンド入力を処理する
+     */
     public void run() {
         Scanner scanner = new Scanner(System.in);
         String command;
@@ -94,6 +111,10 @@ public class ToDoApp {
         scanner.close();
     }
 
+    /**
+     * 新しいタスクの入力を促す
+     * @param scanner スキャナーオブジェクト
+     */
     private void promptForNewTask(Scanner scanner) {
         System.out.print("タスクを入力: ");
         String description = scanner.nextLine();
@@ -102,6 +123,10 @@ public class ToDoApp {
         System.out.println("タスクが追加されました。");
     }
 
+    /**
+     * 入力された優先度が1から5の範囲内であることを確認する
+     * @param scanner スキャナーオブジェクト
+     */
     private int getValidPriority(Scanner scanner) {
         int priority;
         while (true) {
@@ -120,6 +145,10 @@ public class ToDoApp {
         return priority;
     }
 
+    /**
+     * 削除するタスクの番号の入力を促す
+     * @param scanner スキャナーオブジェクト
+     */
     private void promptForTaskDeletion(Scanner scanner) {
         System.out.print("削除するタスク番号を入力: ");
         try {
@@ -135,10 +164,16 @@ public class ToDoApp {
         }
     }
 
+    /**
+     * 現在のタスクを表示する
+     */
     public void addTask(String description, int priority) {
         tasks.add(new Task(description, priority));
     }
 
+    /**
+     * 現在のタスクを表示する
+     */
     public void displayTasks() {
         sortTasksByPriority();
         if (tasks.isEmpty()) {
@@ -150,10 +185,19 @@ public class ToDoApp {
         }
     }
 
+    /**
+     * 指定されたタスクを表示する
+     * @param index タスクのインデックス
+     * @param task タスクオブジェクト
+     */
     private void printTask(int index, Task task) {
         System.out.println((index + 1) + ": " + task);
     }
 
+    /**
+     * タスクを削除する
+     * @param index 削除するタスクのインデックス
+     */
     public void deleteTask(int index) {
         if (index >= 0 && index < tasks.size()) {
             tasks.remove(index);
@@ -162,6 +206,9 @@ public class ToDoApp {
         }
     }
 
+    /**
+     * タスクをファイルに保存する
+     */
     private void saveTasks() {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_NAME))) {
             for (Task task : tasks) {
@@ -173,6 +220,9 @@ public class ToDoApp {
         }
     }
 
+    /**
+     * ファイルからタスクを読み込む
+     */
     private void loadTasks() {
         File file = new File(FILE_NAME);
         if (!file.exists()) {
@@ -201,6 +251,13 @@ public class ToDoApp {
 
 **Task.java**
 ```java
+package com.skym_inc;
+
+/**
+ * タスクを表すクラス
+ * @param description タスクの説明
+ * @param priority タスクの優先度
+ */
 record Task(String description, int priority) {
     @Override
     public String toString() {
